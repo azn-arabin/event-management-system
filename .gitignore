@@ -1,0 +1,65 @@
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore editor-specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore dependency directories
+/vendor/
+/node_modules/
+
+# Ignore Composer files (if you use Composer later)
+/composer.lock
+/composer.phar
+
+# Ignore environment configuration files
+.env
+.env.local
+.env.*.local
+
+# Ignore log files
+*.log
+
+# Ignore cache files
+/cache/
+
+# Ignore uploaded files (if any)
+/uploads/
+
+# Ignore local development files
+*.local
+*.dev
+
+# Ignore XAMPP-specific files
+/xampp/
+/htdocs/
+
+# Ignore MySQL dump files
+*.sql
+*.dump
+
+# Ignore backup files
+*.bak
+*.backup
+
+# Ignore IDE-specific files
+*.iml
+*.ipr
+*.iws
+
+# Ignore compiled files
+*.compiled
+*.min.js
+*.min.css
+
+# Ignore local testing files
+/test/
+/tests/
+
+# Ignore temporary files
+/tmp/
+/temp/
