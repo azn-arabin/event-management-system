@@ -83,6 +83,20 @@ class EventController {
             $location = trim($_POST['location']);
             $max_capacity = (int) $_POST['max_capacity'];
 
+            // ✅ Check if the logged-in user is the event owner
+            $event = $this->event->getEventById($id);
+            if (!$event) {
+                $_SESSION['error'] = "Event not found.";
+                header("Location: /event-management-system/dashboard");
+                exit;
+            }
+
+            if ($event['user_id'] !== $_SESSION['id']) {
+                $_SESSION['error'] = "Unauthorized action! You can only edit your own events.";
+                header("Location: /event-management-system/dashboard");
+                exit;
+            }
+
             $errors = [];
 
             // ✅ Validate input fields (same as createEvent)
@@ -158,6 +172,21 @@ class EventController {
     public function deleteEvent() {
         if (isset($_GET['id'])) {
             $id = (int) $_GET['id'];
+
+            // ✅ Check if the logged-in user is the event owner
+            $event = $this->event->getEventById($id);
+            if (!$event) {
+                $_SESSION['error'] = "Event not found.";
+                header("Location: /event-management-system/dashboard");
+                exit;
+            }
+
+            if ($event['user_id'] !== $_SESSION['id']) {
+                $_SESSION['error'] = "Unauthorized action! You can only delete your own events.";
+                header("Location: /event-management-system/dashboard");
+                exit;
+            }
+
             $this->event->deleteEvent($id);
             $_SESSION['success'] = "Event deleted successfully.";
             header("Location: /event-management-system/dashboard");

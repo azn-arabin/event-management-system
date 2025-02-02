@@ -1,4 +1,9 @@
-<?php include 'layout/header.php'; ?>
+<?php include 'layout/header.php';
+if (isset($_SESSION['user_id'])) {
+    header("Location: dashboard");
+    exit;
+}
+?>
 <div class="container mt-5">
     <h2>Register</h2>
     <?php if (isset($_SESSION['error'])): ?>

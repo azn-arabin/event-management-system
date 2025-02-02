@@ -4,7 +4,7 @@ require_once 'models/Event.php';
 require_once 'config/db.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
-    header("Location: dashboard.php");
+    header("Location: my-events.php");
     exit;
 }
 

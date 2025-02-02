@@ -89,7 +89,6 @@ class AuthController {
             if ($user) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['role'] = $user['role'];
-                $_SESSION['success'] = "Login successful!";
                 header("Location: /event-management-system/dashboard");
                 exit;
             } else {

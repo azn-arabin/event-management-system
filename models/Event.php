@@ -13,16 +13,13 @@ class Event {
         return $stmt->execute([$user_id, $name, $description, $date, $time, $location, $max_capacity]);
     }
 
-    public function getAllEvents() {
-        $stmt = $this->pdo->query("SELECT * FROM events ORDER BY date ASC");
-        return $stmt->fetchAll();
-    }
-
     public function getEventById($id) {
         $stmt = $this->pdo->prepare("SELECT * FROM events WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
+
 
     public function updateEvent($id, $name, $description, $date, $time, $location, $max_capacity) {
         $stmt = $this->pdo->prepare("UPDATE events SET name=?, description=?, date=?, time=?, location=?, max_capacity=? WHERE id=?");
@@ -34,16 +31,29 @@ class Event {
         return $stmt->execute([$id]);
     }
 
-    // Fetch all events with attendee count
-    public function getAllEventsWithAttendeeCount() {
-        $stmt = $this->pdo->query("
-            SELECT e.id, e.name, e.date, e.time, e.location, e.max_capacity, 
-                   COUNT(a.id) as attendee_count
-            FROM events e
-            LEFT JOIN attendees a ON e.id = a.event_id
-            GROUP BY e.id
-        ");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getMyEventsWithAttendeeCount($user_id, $limit, $offset, $search, $sort = 'date ASC, time ASC') {
+        $searchQuery = "%$search%";
+
+        $sql = "
+        SELECT e.*, 
+               (SELECT COUNT(*) FROM attendees a WHERE a.event_id = e.id) AS attendee_count
+        FROM events e
+        WHERE e.user_id = ? AND (e.name LIKE ? OR e.location LIKE ?)
+        ORDER BY $sort
+        LIMIT $limit OFFSET $offset
+    ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$user_id, $searchQuery, $searchQuery]);
+
+        return $stmt->fetchAll();
+    }
+
+    public function getTotalMyEvents($user_id, $search) {
+        $searchQuery = "%$search%";
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) AS total FROM events WHERE user_id = ? AND (name LIKE ? OR location LIKE ?)");
+        $stmt->execute([$user_id, $searchQuery, $searchQuery]);
+        return $stmt->fetchColumn();
     }
 
     // Get attendees for a specific event
@@ -57,5 +67,32 @@ class Event {
         $stmt->execute([$eventId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getUpcomingEventsWithAttendeeCount($user_id, $limit, $offset, $search, $sort = 'date ASC, time ASC') {
+        $searchQuery = "%$search%";
+
+        // ✅ Include LIMIT and OFFSET directly in the SQL query
+        $sql = "
+        SELECT e.*, 
+               (SELECT COUNT(*) FROM attendees a WHERE a.event_id = e.id) AS attendee_count,
+               (SELECT COUNT(*) FROM attendees a WHERE a.event_id = e.id AND a.user_id = ?) AS user_registered
+        FROM events e
+        WHERE e.date >= CURDATE() AND (e.name LIKE ? OR e.location LIKE ?)
+        ORDER BY $sort
+        LIMIT $limit OFFSET $offset
+    ";
+
+        // ✅ Execute the query with only the bindable parameters
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$user_id, $searchQuery, $searchQuery]);
+
+        return $stmt->fetchAll();
+    }
+
+    public function getTotalUpcomingEvents($search) {
+        $searchQuery = "%$search%";
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) AS total FROM events WHERE date >= CURDATE() AND (name LIKE ? OR location LIKE ?)");
+        $stmt->execute([$searchQuery, $searchQuery]);
+        return $stmt->fetchColumn();
+    }
 }
-?>

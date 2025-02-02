@@ -11,14 +11,14 @@ class AttendeeController {
     }
 
     public function register() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event_id'])) {
+        if (isset($_GET['event_id'])) {
             if (!isset($_SESSION['user_id'])) {
                 $_SESSION['error'] = "You must be logged in to register.";
-                header("Location: /event-management-system/login");
+                header("Location: " . ($_SERVER['HTTP_REFERER'] ?? "/event-management-system/")); // ✅ Stay on the same page
                 exit;
             }
 
-            $event_id = (int) $_POST['event_id'];
+            $event_id = (int) $_GET['event_id'];
             $user_id = $_SESSION['user_id'];
 
             $result = $this->attendee->registerUser($event_id, $user_id);
@@ -29,7 +29,7 @@ class AttendeeController {
                 $_SESSION['error'] = $result;
             }
 
-            header("Location: /event-management-system/event-details?id=$event_id");
+            header("Location: " . ($_SERVER['HTTP_REFERER'] ?? "/event-management-system/")); // ✅ Stay on the same page
             exit;
         }
     }

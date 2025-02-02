@@ -27,9 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'edit-event':
             $eventController->editEvent();
             break;
-        case 'attendee-register':
-            $attendeeController->register();
-            break;
         default:
             header("Location: /event-management-system/");
             exit;
@@ -48,8 +45,8 @@ switch ($request) {
     case 'logout':
         $authController->logout();
         break;
-    case 'dashboard':
-        require 'views/dashboard.php';
+    case 'my-events':
+        require 'views/my-events.php';
         break;
     case 'create-event':
         require 'views/create_event.php';
@@ -62,6 +59,9 @@ switch ($request) {
         break;
     case 'event-details':
         require 'views/event_details.php';
+        break;
+    case 'attendee-register':
+        $attendeeController->register();
         break;
     case 'event-report':
         require 'views/event_report.php';
