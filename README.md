@@ -165,16 +165,5 @@ This project is open-source and free to use.
 ---
 
 ### 🎯 **Now, you’re ready to manage your events! 🚀**
-Let me know if you need any modifications. 🎉
-```  
 
----
 
-### **📌 Summary**
-✔ **Includes setup using XAMPP**  
-✔ **Explains database setup & project structure**  
-✔ **Covers all routes & usage instructions**  
-✔ **Fully formatted in Markdown for GitHub readability**  
-
-Now, just save this as `README.md` in the project root! 🚀  
-Let me know if you want any refinements. 🎯
